@@ -1,0 +1,89 @@
+<style>
+
+.section .reveal .state-background {
+    background: #FFBD33;
+}
+.reveal h1, .reveal h2, .reveal h3 {
+  word-wrap: normal;
+  -moz-hyphens: none;
+}
+.small-code pre code {
+  font-size: 1em;
+}
+.midcenter {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+.footer {
+    color: black; background: #E8E8E8;
+    position: fixed; top: 90%;
+    text-align:center; width:100%;
+}
+.pinky .reveal .state-background {
+  background: #FF69B4;
+} 
+.pinky .reveal h1,
+.pinky .reveal h2,
+.pinky .reveal p {
+  color: black;
+}
+</style>
+
+Rube Goldberg Clock
+========================================================
+date: February 27, 2020
+autosize: false
+font-import: http://fonts.googleapis.com/css?family=Merriweather
+font-family: 'Merriweather'
+
+About
+========================================================
+
+This Shiny App is for the Week 4 assignment of the Coursera course on
+Developing Data Products. The app tells the user the time based on how
+the user percieves their state based on internal and external factors.
+
+This is classic Rube Goldberg machine in action; when only the user has
+to look at the clock on their computer for the time, this app leverages
+machine learning (random forests here) to predict the time.
+
+The app is available on: https://nairarshad.shinyapps.io/rubegoldbergclock/
+
+The Shiny App: Frontend
+========================================================
+
+This is a fun Shiny App that tries to guess the time based on your state. 
+This guess is from a random forest classification model for the hour and 
+a random number for the minutes.
+
+The user marks the intensity they feel for 4 questions regarding the 
+intensity of light, sound, hunger, and
+tiredness they feel; related to the last 4 variables in the 
+training data:
+                   
+```{r}
+colnames(read.csv("rubegoldbergclock/train.csv"))
+```
+
+The Shiny App: Backend
+========================================================
+
+On the server end, if the user doesn't know the time, the input answers
+to the questions are processed. 
+
+A random forest model is trained to classify the hour based on a training set of such inputs. 
+
+Then the random forest predicts the hour from the input.
+
+
+Thank you
+========================================================
+
+Further scope: While this is currently a *gag* app, there is the possibility
+of gathering user inputs to increase the number of training observations
+the model has and it may (a very teeny tiny possibility) become a useful
+clock.
+
+- Github: https://github.com/nairarshad/ddpw4
+- shinyapps.io: https://nairarshad.shinyapps.io/rubegoldbergclock/
