@@ -9,9 +9,23 @@ library(shiny)
 library(grid)
 library(randomForest)
 library(lubridate)
+library(shinyalert)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+    
+    # Link to Github code
+    output$mySite <- renderUI({
+        tags$a(href = input$website, input$website)
+    })
+    
+    # Instructions/Documentation popup
+    observeEvent(input$instr, {
+        # Show a modal when the button is pressed
+        shinyalert("", "This is a fun Shiny App that tries to guess the time based on your state. This guess is from a random forest classification model for the hour and a random number for the minutes. 
+                   
+                   If you don't know the time, choose \"NO!\" for the last question and mark the intensity you feel for the other questions in the sidebar; sit back, and let the random forest tell you the time :P", type = "info")
+    })
     
     #' drawClock function to draw a clock
     #' Adapted from https://www.stat.auckland.ac.nz/~paul/RG2e/interactive-clock.R
@@ -62,6 +76,10 @@ shinyServer(function(input, output, session) {
         
     }
     
+    #' The actual time
+    session$userData$time <- reactive({format(lubridate::mdy_hms(as.character(input$clientTime)), "%H:%M")})
+    output$currentTime <- renderText({c("Your time:", session$userData$time())})
+    
     #' The output time
     output$clockat <- renderPlot({
         
@@ -69,7 +87,7 @@ shinyServer(function(input, output, session) {
         loud <- input$loud
         hunger <- input$hunger
         sleep <- input$sleep
-        timchar <- format(Sys.time(),"%H:%M")
+        timchar <- format(lubridate::mdy_hms(as.character(input$clientTime)), "%H:%M")
         giventime <- input$giventime
         
         ifelse(giventime == "yes", knowsthetime(timchar), unknowntime(light, loud, hunger, sleep))
@@ -77,9 +95,7 @@ shinyServer(function(input, output, session) {
         
     })
     
-    #' The actual time
-    session$userData$time <- reactive({format(lubridate::mdy_hms(as.character(input$clientTime)), "%H:%M")})
-    output$currentTime <- renderText({session$userData$time() })
+    
    
     
 })
